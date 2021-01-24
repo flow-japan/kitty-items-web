@@ -8,7 +8,7 @@ const CODE = cdc`
   import NonFungibleToken from 0xNonFungibleToken
   import Kibble from 0xKibble
   import KittyItems from 0xKittyItems
-  import KittyItemsMarket from 0xKittyItemsMarket
+  import SampleMarket from 0xSampleMarket
 
   pub fun hasKibble(_ address: Address): Bool {
     let receiver = getAccount(address)
@@ -30,7 +30,7 @@ const CODE = cdc`
 
   pub fun hasMarket(_ address: Address): Bool {
     return getAccount(address)
-      .getCapability<&KittyItemsMarket.Collection{KittyItemsMarket.CollectionPublic}>(KittyItemsMarket.CollectionPublicPath)!
+      .getCapability<&SampleMarket.Collection{SampleMarket.CollectionPublic}>(SampleMarket.CollectionPublicPath)!
       .check()
   }
 
@@ -55,11 +55,11 @@ const CODE = cdc`
       }
 
       if !hasMarket(acct.address) {
-        if acct.borrow<&KittyItemsMarket.Collection>(from: /storage/KittyItemsMarketCollection) == nil {
-          acct.save(<-KittyItemsMarket.createEmptyCollection(), to: KittyItemsMarket.CollectionStoragePath)
+        if acct.borrow<&SampleMarket.Collection>(from: /storage/SampleMarketCollection) == nil {
+          acct.save(<-SampleMarket.createEmptyCollection(), to: SampleMarket.CollectionStoragePath)
         }
-        acct.unlink(KittyItemsMarket.CollectionPublicPath)
-        acct.link<&KittyItemsMarket.Collection{KittyItemsMarket.CollectionPublic}>(KittyItemsMarket.CollectionPublicPath, target:KittyItemsMarket.CollectionStoragePath)
+        acct.unlink(SampleMarket.CollectionPublicPath)
+        acct.link<&SampleMarket.Collection{SampleMarket.CollectionPublic}>(SampleMarket.CollectionPublicPath, target:SampleMarket.CollectionStoragePath)
       }
     }
   }

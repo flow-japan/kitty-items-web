@@ -51,7 +51,7 @@ export function InitCluster({address}) {
             </Tr>
             <Tr>
               <Td>Kitty Items Market</Td>
-              <Td>{fmtBool(init.KittyItemsMarket)}</Td>
+              <Td>{fmtBool(init.SampleMarket)}</Td>
             </Tr>
           </Tbody>
         </Table>

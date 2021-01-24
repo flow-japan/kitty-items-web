@@ -13,8 +13,8 @@ function expand(key) {
   return key.split("|")
 }
 
-function comp(address, id) {
-  return [address, id].join("|")
+function comp(address, key) {
+  return [address, key].join("|")
 }
 
 export const $state = atomFamily({
@@ -30,18 +30,20 @@ export const $status = atomFamily({
   default: IDLE,
 })
 
-export function useMarketItem(address, id) {
+export function useMarketItem(address, key) {
   const [cu] = useCurrentUser()
   const ownerItems = useAccountItems(address)
   const cuItems = useAccountItems(cu.addr)
   const ownerMarket = useMarketItems(address)
   const cuMarket = useMarketItems(cu.addr)
   const kibble = useKibblesBalance(cu.addr)
-  const key = comp(address, id)
-  const [item, setItem] = useRecoilState($state(key))
-  const [status, setStatus] = useRecoilState($status(key))
+  const stateKey = comp(address, key)
+  const [item, setItem] = useRecoilState($state(stateKey))
+  const [status, setStatus] = useRecoilState($status(stateKey))
 
   const owned = sansPrefix(cu.addr) === sansPrefix(address)
+
+  const [itemTokenAddress, itemTokenName, itemId] = key.split('.')
 
   return {
     ...item,
@@ -49,7 +51,12 @@ export function useMarketItem(address, id) {
     owned,
     async buy() {
       await buyMarketItem(
-        {itemId: id, ownerAddress: address},
+        {
+          itemTokenAddress,
+          itemTokenName,
+          itemId,
+          ownerAddress: address
+        },
         {
           onStart() {
             setStatus(PROCESSING)
@@ -71,7 +78,11 @@ export function useMarketItem(address, id) {
     },
     async cancelListing() {
       await cancelMarketListing(
-        {itemId: id},
+        {
+          itemTokenAddress,
+          itemTokenName,
+          itemId
+        },
         {
           onStart() {
             setStatus(PROCESSING)
@@ -89,7 +100,7 @@ export function useMarketItem(address, id) {
     },
     async refresh() {
       setStatus(PROCESSING)
-      await fetchMarketItem(...expand(key)).then(setItem)
+      await fetchMarketItem(...expand(stateKey)).then(setItem)
       setStatus(IDLE)
     },
   }

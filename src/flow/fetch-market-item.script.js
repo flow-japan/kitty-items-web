@@ -3,7 +3,7 @@ import * as t from "@onflow/types"
 // import {batch} from "./util/batch"
 
 // const CODE = fcl.cdc`
-//   import KittyItemsMarket from 0xfcceff21d9532b58
+//   import SampleMarket from 0xfcceff21d9532b58
 
 //   pub struct Item {
 //     pub let id: UInt64
@@ -21,7 +21,7 @@ import * as t from "@onflow/types"
 
 //   pub fun fetch(address: Address, id: UInt64): Item? {
 //     let cap = getAccount(address)
-//       .getCapability<&KittyItemsMarket.Collection{KittyItemsMarket.CollectionPublic}>(KittyItemsMarket.CollectionPublicPath)!
+//       .getCapability<&SampleMarket.Collection{SampleMarket.CollectionPublic}>(SampleMarket.CollectionPublicPath)!
 
 //     if let collection = cap.borrow() {
 //       // this currently throws as the collection.borrowSaleItem returns a non-optional resource
@@ -81,11 +81,13 @@ import * as t from "@onflow/types"
 //   return enqueue(address, id)
 // }
 
-export async function fetchMarketItem(address, id) {
+export async function fetchMarketItem(address, key) {
+  const [itemTokenAddress, itemTokenName, id] = key.split('.')
+
   return fcl
     .send([
       fcl.script`
-      import KittyItemsMarket from 0xfcceff21d9532b58
+      import SampleMarket from 0xSampleMarket
 
       pub struct Item {
         pub let id: UInt64
@@ -101,19 +103,28 @@ export async function fetchMarketItem(address, id) {
         }
       }
 
-      pub fun main(address: Address, id: UInt64): Item? {
+      pub fun main(address: Address, itemTokenAddress: Address, itemTokenName: String, id: UInt64): Item? {
         let cap = getAccount(address)
-          .getCapability<&KittyItemsMarket.Collection{KittyItemsMarket.CollectionPublic}>(KittyItemsMarket.CollectionPublicPath)!
+          .getCapability<&SampleMarket.Collection{SampleMarket.CollectionPublic}>(SampleMarket.CollectionPublicPath)!
 
         if let collection = cap.borrow() {
-          let item = collection.borrowSaleItem(saleItemID: id)
+          let item = collection.borrowSaleItem(
+            saleItemTokenAddress: itemTokenAddress,
+            saleItemTokenName: itemTokenName,
+            saleItemID: id
+          )
           return Item(id: id, isCompleted: item.saleCompleted, price: item.salePrice, owner: address)
         } else {
           return nil
         }
       }
     `,
-      fcl.args([fcl.arg(address, t.Address), fcl.arg(Number(id), t.UInt64)]),
+      fcl.args([
+        fcl.arg(address, t.Address),
+        fcl.arg(itemTokenAddress, t.Address),
+        fcl.arg(itemTokenName, t.String),
+        fcl.arg(Number(id), t.UInt64)
+      ]),
     ])
     .then(fcl.decode)
 }

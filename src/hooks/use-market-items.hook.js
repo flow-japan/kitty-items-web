@@ -30,7 +30,7 @@ export function useMarketItems(address) {
       setStatus(IDLE)
     },
     has(id) {
-      return asSet.has(id)
+      return asSet.has(id) // TODO:
     },
   }
 }

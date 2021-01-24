@@ -74,8 +74,11 @@ const {enqueue} = batch("FETCH_ACCOUNT_ITEM", async px => {
     .then(fcl.decode)
 })
 
-export async function fetchAccountItem(address, id) {
+export async function fetchAccountItem(address, key) {
   if (address == null) return Promise.resolve(null)
-  if (id == null) return Promise.resolve(null)
+  if (key == null) return Promise.resolve(null)
+  // key example: '0xf8d6e0586b0a20c7.KittyItems.1'
+  const keyArray = key.split('.')
+  const id = keyArray[keyArray.length - 1]
   return enqueue(address, id)
 }

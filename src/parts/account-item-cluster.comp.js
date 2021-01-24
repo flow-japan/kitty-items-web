@@ -3,14 +3,17 @@ import {Loading} from "../parts/loading.comp"
 import {useAccountItem} from "../hooks/use-account-item.hook"
 // import {useMarketItem} from "../hooks/use-market-item.hook"
 import {useCurrentUser} from "../hooks/use-current-user.hook"
-import {IDLE} from "../global/constants"
+import {IDLE, KITTY_ITEMS_ADDRESS, KITTY_ITEMS_NAME} from "../global/constants"
 import {Tr, Td, Button, Spinner, Flex, Center, Text} from "@chakra-ui/react"
 
 export function AccountItemCluster({address, id}) {
-  const item = useAccountItem(address, id)
-  // const list = useMarketItem(address, id)
+  // TODO: NFTの種類を選べるようにする
+  const key = `${KITTY_ITEMS_ADDRESS}.${KITTY_ITEMS_NAME}.${id}`
+  const item = useAccountItem(address, key)
+  // const list = useMarketItem(address, key)
   const [cu] = useCurrentUser()
 
+  // TODO: なぜか機能していない
   const BUSY = item.status !== IDLE
 
   if (address == null) return null

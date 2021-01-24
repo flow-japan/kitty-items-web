@@ -1,5 +1,6 @@
 import {atomFamily, selectorFamily, useRecoilState} from "recoil"
 import {fetchAccountItems} from "../flow/fetch-account-items.script"
+import {mintKittyItem} from "../flow/mint-kitty-item.tx"
 import {IDLE, PROCESSING} from "../global/constants"
 
 export const $state = atomFamily({
@@ -31,19 +32,27 @@ export function useAccountItems(address) {
     refresh,
     async mint() {
       setStatus(PROCESSING)
-      await fetch(
-        "https://kitty-items-flow-testnet.herokuapp.com/v1/kitty-items/mint",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            recipient: address,
-            typeId: 2,
-          }),
-        }
-      )
+
+      // TODO: mintをapiで実施するよう変更
+      // await fetch(
+      //   "https://kitty-items-flow-testnet.herokuapp.com/v1/kitty-items/mint",
+      //   {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       recipient: address,
+      //       typeId: 2,
+      //     }),
+      //   }
+      // )
+      // これは一時的なコード
+      await mintKittyItem({
+        recipient: address,
+        typeID: 1
+      });
+
       await fetchAccountItems(address).then(setItems)
       setStatus(IDLE)
     },

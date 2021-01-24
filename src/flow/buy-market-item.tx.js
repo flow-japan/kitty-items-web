@@ -8,22 +8,26 @@ const CODE = fcl.cdc`
   import NonFungibleToken from 0xNonFungibleToken
   import Kibble from 0xKibble
   import KittyItems from 0xKittyItems
-  import KittyItemsMarket from 0xKittyItemsMarket
+  import SampleMarket from 0xSampleMarket
 
-  transaction(saleItemID: UInt64, marketCollectionAddress: Address) {
+  transaction(saleItemTokenAddress: Address, saleItemTokenName: String, saleItemID: UInt64, marketCollectionAddress: Address) {
       let paymentVault: @FungibleToken.Vault
       let kittyItemsCollection: &KittyItems.Collection{NonFungibleToken.Receiver}
-      let marketCollection: &KittyItemsMarket.Collection{KittyItemsMarket.CollectionPublic}
+      let marketCollection: &SampleMarket.Collection{SampleMarket.CollectionPublic}
 
       prepare(acct: AuthAccount) {
           self.marketCollection = getAccount(marketCollectionAddress)
-              .getCapability<&KittyItemsMarket.Collection{KittyItemsMarket.CollectionPublic}>(
-                  KittyItemsMarket.CollectionPublicPath
+              .getCapability<&SampleMarket.Collection{SampleMarket.CollectionPublic}>(
+                  SampleMarket.CollectionPublicPath
               )!
               .borrow()
               ?? panic("Could not borrow market collection from market address")
 
-          let price = self.marketCollection.borrowSaleItem(saleItemID: saleItemID).salePrice
+          let price = self.marketCollection.borrowSaleItem(
+            saleItemTokenAddress: saleItemTokenAddress,
+            saleItemTokenName: saleItemTokenName,
+            saleItemID: saleItemID
+          ).salePrice
 
           let mainKibbleVault = acct.borrow<&Kibble.Vault>(from: Kibble.VaultStoragePath)
               ?? panic("Cannot borrow Kibble vault from acct storage")
@@ -36,6 +40,8 @@ const CODE = fcl.cdc`
 
       execute {
           self.marketCollection.purchase(
+              saleItemTokenAddress: saleItemTokenAddress,
+              saleItemTokenName: saleItemTokenName,
               saleItemID: saleItemID,
               buyerCollection: self.kittyItemsCollection,
               buyerPayment: <- self.paymentVault
@@ -45,13 +51,22 @@ const CODE = fcl.cdc`
 `
 
 // prettier-ignore
-export function buyMarketItem({itemId, ownerAddress}, opts = {}) {
-  invariant(itemId != null, "buyMarketItem({itemId, ownerAddress}) -- itemId required")
-  invariant(ownerAddress != null, "buyMarketItem({itemId, ownerAddress}) -- ownerAddress required")
+export function buyMarketItem({
+  itemTokenAddress,
+  itemTokenName,
+  itemId,
+  ownerAddress
+}, opts = {}) {
+  invariant(itemTokenAddress != null, "buyMarketItem() -- itemTokenAddress required")
+  invariant(itemTokenName != null, "buyMarketItem() -- itemTokenName required")
+  invariant(itemId != null, "buyMarketItem() -- itemId required")
+  invariant(ownerAddress != null, "buyMarketItem() -- ownerAddress required")
 
   return tx([
     fcl.transaction(CODE),
     fcl.args([
+      fcl.arg(String(itemTokenAddress), t.Address),
+      fcl.arg(String(itemTokenName), t.String),
       fcl.arg(Number(itemId), t.UInt64),
       fcl.arg(String(ownerAddress), t.Address),
     ]),

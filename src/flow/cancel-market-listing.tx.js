@@ -4,26 +4,38 @@ import {tx} from "./util/tx"
 import {invariant} from "@onflow/util-invariant"
 
 const CODE = fcl.cdc`
-  import KittyItemsMarket from 0xKittyItemsMarket
+  import SampleMarket from 0xSampleMarket
 
-  transaction(saleItemID: UInt64) {
+  transaction(
+    saleItemTokenAddress: Address,
+    saleItemTokenName: String,
+    saleItemID: UInt64
+  ) {
       prepare(account: AuthAccount) {
           let listing <- account
-            .borrow<&KittyItemsMarket.Collection>(from: KittyItemsMarket.CollectionStoragePath)!
-            .remove(saleItemID: saleItemID)
+            .borrow<&SampleMarket.Collection>(from: SampleMarket.CollectionStoragePath)!
+            .remove(
+              saleItemTokenAddress: saleItemTokenAddress,
+              saleItemTokenName: saleItemTokenName,
+              saleItemID: saleItemID
+            )
           destroy listing
       }
   }
 `
 
 // prettier-ignore
-export function cancelMarketListing({ itemId }, opts = {}) {
-  invariant(itemId != null, "cancelMarketListing({itemId}) -- itemId required")
+export function cancelMarketListing({ itemTokenAddress, itemTokenName, itemId }, opts = {}) {
+  invariant(itemTokenAddress != null, "cancelMarketListing() -- itemTokenAddress required")
+  invariant(itemTokenName != null, "cancelMarketListing() -- itemTokenName required")
+  invariant(itemId != null, "cancelMarketListing() -- itemId required")
 
   return tx([
     fcl.transaction(CODE),
     fcl.args([
-      fcl.arg(Number(itemId), t.UInt64),
+      fcl.arg(String(itemTokenAddress), t.Address),
+      fcl.arg(String(itemTokenName), t.String),
+      fcl.arg(Number(itemId), t.UInt64)
     ]),
     fcl.proposer(fcl.authz),
     fcl.payer(fcl.authz),

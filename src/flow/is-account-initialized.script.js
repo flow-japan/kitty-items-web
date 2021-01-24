@@ -6,7 +6,7 @@ const CODE = cdc`
   import NonFungibleToken from 0xNonFungibleToken
   import Kibble from 0xKibble
   import KittyItems from 0xKittyItems
-  import KittyItemsMarket from 0xKittyItemsMarket
+  import SampleMarket from 0xSampleMarket
 
   pub fun hasKibble(_ address: Address): Bool {
     let receiver: Bool = getAccount(address)
@@ -26,9 +26,9 @@ const CODE = cdc`
       .check()
   }
 
-  pub fun hasKittyItemsMarket(_ address: Address): Bool {
+  pub fun hasSampleMarket(_ address: Address): Bool {
     return getAccount(address)
-      .getCapability<&KittyItemsMarket.Collection{KittyItemsMarket.CollectionPublic}>(KittyItemsMarket.CollectionPublicPath)!
+      .getCapability<&SampleMarket.Collection{SampleMarket.CollectionPublic}>(SampleMarket.CollectionPublicPath)!
       .check()
   }
 
@@ -36,7 +36,7 @@ const CODE = cdc`
     let ret: {String: Bool} = {}
     ret["Kibble"] = hasKibble(address)
     ret["KittyItems"] = hasKittyItems(address)
-    ret["KittyItemsMarket"] = hasKittyItemsMarket(address)
+    ret["SampleMarket"] = hasSampleMarket(address)
     return ret
   }
 `

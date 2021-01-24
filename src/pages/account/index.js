@@ -1,6 +1,6 @@
 import {Suspense} from "react"
 import {Base} from "../../parts/base.comp"
-import {IDLE} from "../../global/constants"
+import {IDLE, STORE_ADDRESS} from "../../global/constants"
 import {useAddress} from "../../hooks/use-url-address.hook"
 import {useCurrentUser} from "../../hooks/use-current-user.hook"
 import {useMarketItems} from "../../hooks/use-market-items.hook"
@@ -25,8 +25,6 @@ import {
   Spinner,
   Button,
 } from "@chakra-ui/react"
-
-const STORE_ADDRESS = "0xba1132bc08f82fe2"
 
 export function MarketItemsCount({address}) {
   const items = useMarketItems(address)
@@ -90,7 +88,7 @@ export function Page() {
           <Box ml="4">
             <BalanceCluster address={address} />
           </Box>
-          {cu.addr === address && cu.addr === STORE_ADDRESS && (
+          {cu.addr === address && (
             <Box ml="4">
               <Suspense fallback={null}>
                 <MintButton address={address} />

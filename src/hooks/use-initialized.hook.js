@@ -35,7 +35,7 @@ export const $computedInit = selectorFamily({
   key: "init::computed",
   get: address => async ({get}) => {
     const all = get($init(address))
-    return all.Kibble && all.KittyItems && all.KittyItemsMarket
+    return all.Kibble && all.KittyItems && all.SampleMarket
   },
 })
 

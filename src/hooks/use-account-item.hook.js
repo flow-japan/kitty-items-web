@@ -1,9 +1,9 @@
-import {sansPrefix} from "@onflow/fcl"
+import {config, sansPrefix} from "@onflow/fcl"
 import {atomFamily, selectorFamily, useRecoilState} from "recoil"
 import {useCurrentUser} from "../hooks/use-current-user.hook"
 import {fetchAccountItem} from "../flow/fetch-account-item.script"
 import {createSaleOffer} from "../flow/create-sale-offer.tx"
-import {IDLE, PROCESSING} from "../global/constants"
+import {IDLE, PROCESSING, KIBBLE_ADDRESS, KIBBLE_NAME} from "../global/constants"
 import {useAccountItems} from "../hooks/use-account-items.hook"
 import {useMarketItems} from "../hooks/use-market-items.hook"
 
@@ -28,22 +28,32 @@ export const $status = atomFamily({
   default: IDLE,
 })
 
-export function useAccountItem(address, id) {
+export function useAccountItem(address, key) {
   const [cu] = useCurrentUser()
   const accountItems = useAccountItems(address)
   const marketItems = useMarketItems(address)
-  const key = comp(address, id)
-  const [item, setItem] = useRecoilState($state(key))
-  const [status, setStatus] = useRecoilState($status(key))
+  const stateKey = comp(address, key)
+  const [item, setItem] = useRecoilState($state(stateKey))
+  const [status, setStatus] = useRecoilState($status(stateKey))
+
+  const [itemTokenAddress, itemTokenName, itemId] = key.split('.')
 
   return {
     ...item,
     status,
-    forSale: marketItems.has(id),
+    forSale: marketItems.has(itemId),
     owned: sansPrefix(cu.addr) === sansPrefix(address),
     async sell(price) {
+      // TODO: FT の種類を選べるようにする
       await createSaleOffer(
-        {itemId: id, price: price},
+        {
+          itemTokenAddress,
+          itemTokenName,
+          itemId,
+          paymentTokenAddress: KIBBLE_ADDRESS,
+          paymentTokenName: KIBBLE_NAME,
+          price: price
+        },
         {
           onStart() {
             setStatus(PROCESSING)
@@ -60,7 +70,7 @@ export function useAccountItem(address, id) {
     },
     async refresh() {
       setStatus(PROCESSING)
-      await fetchAccountItem(...expand(key)).then(setItem)
+      await fetchAccountItem(...expand(stateKey)).then(setItem)
       setStatus(IDLE)
     },
   }
