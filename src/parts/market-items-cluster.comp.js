@@ -21,8 +21,8 @@ export function MarketItemsCluster({address}) {
       <Table size="sm">
         <Thead>
           <Tr>
+            <Th>Item Token Name</Th>
             <Th>Id</Th>
-            <Th>Type</Th>
             <Th isNumeric>Price</Th>
             {cu.addr === address ? <Th /> : null}
           </Tr>

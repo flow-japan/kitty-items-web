@@ -43,16 +43,18 @@ export function useAccountItem(address, key) {
     status,
     forSale: marketItems.has(itemId),
     owned: sansPrefix(cu.addr) === sansPrefix(address),
-    async sell(price) {
-      // TODO: FT の種類を選べるようにする
-      await createSaleOffer(
+    itemTokenName: marketItems.itemTokenName,
+    paymentTokenName: marketItems.paymentTokenName,
+    test: JSON.stringify(marketItems),
+    async sell(price, paymentTokenAddress, paymentTokenName) {
+      const txStatus = await createSaleOffer(
         {
           itemTokenAddress,
           itemTokenName,
           itemId,
-          paymentTokenAddress: KIBBLE_ADDRESS,
-          paymentTokenName: KIBBLE_NAME,
-          price: price
+          paymentTokenAddress,
+          paymentTokenName,
+          price
         },
         {
           onStart() {
@@ -67,6 +69,7 @@ export function useAccountItem(address, key) {
           },
         }
       )
+      console.log('txStatus', txStatus);
     },
     async refresh() {
       setStatus(PROCESSING)

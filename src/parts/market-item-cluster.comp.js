@@ -3,7 +3,7 @@ import {useMarketItem} from "../hooks/use-market-item.hook"
 import {useAccountItem} from "../hooks/use-account-item.hook"
 import {useCurrentUser} from "../hooks/use-current-user.hook"
 import {IDLE} from "../global/constants"
-import {fmtKibbles} from "../util/fmt-kibbles"
+import {fmtPrice} from "../util/fmt-price"
 import {Tr, Td, Button, Spinner, Flex, Center, Text} from "@chakra-ui/react"
 
 export function MarketItemCluster({address, id}) {
@@ -18,7 +18,8 @@ export function MarketItemCluster({address, id}) {
 
   return (
     <Tr>
-      <Td maxW="50px">
+      <Td>{list.itemTokenName}</Td>
+      <Td>
         <Flex>
           <Text>#{item.id}</Text>
           {BUSY && (
@@ -28,12 +29,11 @@ export function MarketItemCluster({address, id}) {
           )}
         </Flex>
       </Td>
-      <Td>{item.type}</Td>
-      <Td isNumeric>{fmtKibbles(list.price, true)}</Td>
+      <Td isNumeric>{fmtPrice(list.price, list.paymentTokenName === 'Kibble' ? 'KIBBLE' : 'FLOW')}</Td>
       {loggedIn && (
         <>
           {item.owned ? (
-            <Td isNumeric maxW="20px">
+            <Td isNumeric maxW="50px">
               <Button
                 colorScheme="orange"
                 size="sm"

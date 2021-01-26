@@ -22,8 +22,8 @@ export function AccountItemsCluster({address}) {
       <Table size="sm">
         <Thead>
           <Tr>
+            <Th>Item Token Name</Th>
             <Th>Id</Th>
-            <Th>Type</Th>
             {cu.addr === address && <Th />}
           </Tr>
         </Thead>

@@ -3,7 +3,7 @@ import {Loading} from "../parts/loading.comp"
 import {useAccountItem} from "../hooks/use-account-item.hook"
 // import {useMarketItem} from "../hooks/use-market-item.hook"
 import {useCurrentUser} from "../hooks/use-current-user.hook"
-import {IDLE, KITTY_ITEMS_ADDRESS, KITTY_ITEMS_NAME} from "../global/constants"
+import {IDLE, KITTY_ITEMS_ADDRESS, KITTY_ITEMS_NAME, KIBBLE_ADDRESS, KIBBLE_NAME, FLOW_TOKEN_ADDRESS, FLOW_TOKEN_NAME} from "../global/constants"
 import {Tr, Td, Button, Spinner, Flex, Center, Text} from "@chakra-ui/react"
 
 export function AccountItemCluster({address, id}) {
@@ -21,7 +21,8 @@ export function AccountItemCluster({address, id}) {
 
   return (
     <Tr>
-      <Td maxW="50px">
+      <Td>{KITTY_ITEMS_NAME}</Td>
+      <Td>
         <Flex>
           <Text as={item.forSale && "del"}>#{item.id}</Text>
           {BUSY && (
@@ -31,19 +32,29 @@ export function AccountItemCluster({address, id}) {
           )}
         </Flex>
       </Td>
-      <Td>{item.type}</Td>
       {cu.addr === address && (
         <>
           {!item.forSale ? (
-            <Td isNumeric maxW="50px">
-              <Button
-                colorScheme="blue"
-                size="sm"
-                disabled={BUSY}
-                onClick={() => item.sell("10.0")}
-              >
-                List for 10 KIBBLE
-              </Button>
+            <Td isNumeric size="sm">
+              <Flex justify="flex-end">
+                <Button
+                  colorScheme="blue"
+                  size="sm"
+                  disabled={BUSY}
+                  onClick={() => item.sell("10.0", KIBBLE_ADDRESS, KIBBLE_NAME)}
+                >
+                  List for 10 KIBBLE
+                </Button>
+                <Button
+                  ml="5"
+                  colorScheme="blue"
+                  size="sm"
+                  disabled={BUSY}
+                  onClick={() => item.sell("0.001", FLOW_TOKEN_ADDRESS, FLOW_TOKEN_NAME)}
+                >
+                  List for 0.001 FLOW
+                </Button>
+              </Flex>
             </Td>
           ) : (
             <Td isNumeric maxW="50px">

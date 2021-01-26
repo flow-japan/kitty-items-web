@@ -90,15 +90,32 @@ export async function fetchMarketItem(address, key) {
       import SampleMarket from 0xSampleMarket
 
       pub struct Item {
+        pub let itemTokenAddress: Address
+        pub let itemTokenName: String
         pub let id: UInt64
         pub let isCompleted: Bool
         pub let price: UFix64
+        pub let paymentTokenAddress: Address
+        pub let paymentTokenName: String
         pub let owner: Address
 
-        init(id: UInt64, isCompleted: Bool, price: UFix64, owner: Address) {
+        init(
+          itemTokenAddress: Address,
+          itemTokenName: String,
+          id: UInt64,
+          isCompleted: Bool,
+          price: UFix64,
+          paymentTokenAddress: Address,
+          paymentTokenName: String,
+          owner: Address
+        ) {
+          self.itemTokenAddress = itemTokenAddress
+          self.itemTokenName = itemTokenName
           self.id = id
           self.isCompleted = isCompleted
           self.price = price
+          self.paymentTokenAddress = paymentTokenAddress
+          self.paymentTokenName = paymentTokenName
           self.owner = owner
         }
       }
@@ -113,7 +130,16 @@ export async function fetchMarketItem(address, key) {
             saleItemTokenName: itemTokenName,
             saleItemID: id
           )
-          return Item(id: id, isCompleted: item.saleCompleted, price: item.salePrice, owner: address)
+          return Item(
+            itemTokenAddress: itemTokenAddress,
+            itemTokenName: itemTokenName,
+            id: id,
+            isCompleted: item.saleCompleted,
+            price: item.salePrice,
+            paymentTokenAddress: item.salePaymentTokenAddress,
+            paymentTokenName: item.salePaymentTokenName,
+            owner: address
+          )
         } else {
           return nil
         }

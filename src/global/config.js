@@ -1,6 +1,5 @@
 import {config} from "@onflow/fcl"
 import {
-  CONTRACTS,
   FLOW_TOKEN_ADDRESS,
   FUNGIBLE_TOKEN_ADDRESS,
   NON_FUNGIBLE_TOKEN_ADDRESS,
