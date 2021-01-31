@@ -1,9 +1,9 @@
-import {config, sansPrefix} from "@onflow/fcl"
+import {sansPrefix} from "@onflow/fcl"
 import {atomFamily, selectorFamily, useRecoilState} from "recoil"
 import {useCurrentUser} from "../hooks/use-current-user.hook"
 import {fetchAccountItem} from "../flow/fetch-account-item.script"
 import {createSaleOffer} from "../flow/create-sale-offer.tx"
-import {IDLE, PROCESSING, KIBBLE_ADDRESS, KIBBLE_NAME} from "../global/constants"
+import {IDLE, PROCESSING} from "../global/constants"
 import {useAccountItems} from "../hooks/use-account-items.hook"
 import {useMarketItems} from "../hooks/use-market-items.hook"
 
