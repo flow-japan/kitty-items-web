@@ -5,6 +5,7 @@ import {useCurrentUser} from "../hooks/use-current-user.hook"
 import {useAccountItems} from "../hooks/use-account-items.hook"
 import {useMarketItems} from "../hooks/use-market-items.hook"
 import {useKibblesBalance} from "../hooks/use-kibbles-balance.hook"
+import {useFlowBalance} from "../hooks/use-flow-balance.hook"
 import {fetchMarketItem} from "../flow/fetch-market-item.script"
 import {buyMarketItem} from "../flow/buy-market-item.tx"
 import {cancelMarketListing} from "../flow/cancel-market-listing.tx"
@@ -37,6 +38,7 @@ export function useMarketItem(address, key) {
   const ownerMarket = useMarketItems(address)
   const cuMarket = useMarketItems(cu.addr)
   const kibble = useKibblesBalance(cu.addr)
+  const flowToken = useFlowBalance(cu.addr)
   const stateKey = comp(address, key)
   const [item, setItem] = useRecoilState($state(stateKey))
   const [status, setStatus] = useRecoilState($status(stateKey))
@@ -68,6 +70,7 @@ export function useMarketItem(address, key) {
             }
             cuItems.refresh()
             cuMarket.refresh()
+            flowToken.refresh()
             kibble.refresh()
           },
           async onComplete() {
@@ -90,6 +93,7 @@ export function useMarketItem(address, key) {
           async onSuccess() {
             cuItems.refresh()
             cuMarket.refresh()
+            flowToken.refresh()
             kibble.refresh()
           },
           async onComplete() {

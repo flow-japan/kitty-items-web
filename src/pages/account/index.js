@@ -26,10 +26,10 @@ import {
   Button,
 } from "@chakra-ui/react"
 
-export function MarketItemsCount({address}) {
+export function ForSaleItemsCount({address}) {
   const items = useMarketItems(address)
   if (items.status !== IDLE) return <Spinner size="xs" ml="1" />
-  const l = items?.ids?.length ?? 0
+  const l = items?.items?.length ?? 0
   return l > 0 ? <Tag ml="1">{l}</Tag> : null
 }
 
@@ -43,7 +43,7 @@ export function AccountItemsCount({address}) {
 export function StoreItemsCount() {
   const items = useMarketItems(STORE_ADDRESS)
   if (items.status !== IDLE) return <Spinner size="xs" ml="1" />
-  const l = items?.ids?.length ?? 0
+  const l = items?.items?.length ?? 0
   return l > 0 ? <Tag ml="1">{l}</Tag> : null
 }
 
@@ -101,7 +101,7 @@ export function Page() {
             <Tab>
               For Sale{" "}
               <Suspense fallback={null}>
-                <MarketItemsCount address={address} />
+                <ForSaleItemsCount address={address} />
               </Suspense>
             </Tab>
             <Tab>
