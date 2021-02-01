@@ -30,6 +30,4 @@ export const KIBBLE_NAME = "Kibble"
 export const FLOW_TOKEN_NAME = "FlowToken"
 export const KITTY_ITEMS_NAME = "KittyItems"
 
-// TODO: APIから一覧取得するよう変更
-// export const STORE_ADDRESS = "0xf3fcd2c1a78f5eee"
-export const STORE_ADDRESS = "0xfc40912427c789d2"
+export const STORE_ADDRESS = "dummy"

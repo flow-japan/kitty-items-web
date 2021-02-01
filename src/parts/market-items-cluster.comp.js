@@ -9,7 +9,7 @@ export function MarketItemsCluster({address}) {
   const [cu] = useCurrentUser()
   if (address == null) return null
 
-  if (items.ids.length <= 0)
+  if (items.items.length <= 0)
     return (
       <Box borderWidth="1px" borderRadius="lg" p="4">
         <Text>No Items Listed For Sale</Text>
@@ -28,8 +28,8 @@ export function MarketItemsCluster({address}) {
           </Tr>
         </Thead>
         <Tbody>
-          {items.ids.map(id => (
-            <Item key={id} id={id} address={address} />
+          {items.items.map(item => (
+            <Item key={item.key} itemKey={item.key} address={item.collectionAddress} />
           ))}
         </Tbody>
       </Table>

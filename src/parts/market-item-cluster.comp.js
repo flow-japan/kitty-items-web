@@ -6,15 +6,15 @@ import {IDLE} from "../global/constants"
 import {fmtPrice} from "../util/fmt-price"
 import {Tr, Td, Button, Spinner, Flex, Center, Text} from "@chakra-ui/react"
 
-export function MarketItemCluster({address, id}) {
-  const item = useAccountItem(address, id)
-  const list = useMarketItem(address, id)
+export function MarketItemCluster({address, itemKey}) {
+  const item = useAccountItem(address, itemKey)
+  const list = useMarketItem(address, itemKey)
   const [, loggedIn] = useCurrentUser()
 
   const BUSY = item.status !== IDLE || list.status !== IDLE
 
   if (address == null) return null
-  if (id == null) return null
+  if (itemKey == null) return null
 
   return (
     <Tr>
@@ -68,7 +68,7 @@ export default function WrappedMarketItemCluster(props) {
         <Tr>
           <Td maxW="50px">
             <Flex>
-              <Text>#{props.id}</Text>
+              <Text>#{props.itemKey}</Text>
               <Center ml="4">
                 <Spinner size="xs" />
               </Center>

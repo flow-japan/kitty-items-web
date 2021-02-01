@@ -2,6 +2,7 @@ import {atomFamily, selectorFamily, useRecoilState} from "recoil"
 import {fetchAccountItems} from "../flow/fetch-account-items.script"
 import {mintKittyItem} from "../flow/mint-kitty-item.tx"
 import {IDLE, PROCESSING} from "../global/constants"
+import {fetchMarketItems} from "../flow/fetch-market-items.script"
 
 export const $state = atomFamily({
   key: "account-items::state",
