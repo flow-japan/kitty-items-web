@@ -1,11 +1,14 @@
 import {Suspense} from "react"
 import {useAccountItems} from "../hooks/use-account-items.hook"
+import {useMarketItems} from "../hooks/use-market-items.hook"
 import {useCurrentUser} from "../hooks/use-current-user.hook"
+import {KITTY_ITEMS_ADDRESS, KITTY_ITEMS_NAME} from "../global/constants"
 import Item from "./account-item-cluster.comp"
 import {Box, Table, Thead, Tbody, Tr, Th, Text, Spinner} from "@chakra-ui/react"
 
 export function AccountItemsCluster({address}) {
   const items = useAccountItems(address)
+  const list = useMarketItems(address)
   const [cu] = useCurrentUser()
 
   if (address == null) return null
@@ -29,7 +32,7 @@ export function AccountItemsCluster({address}) {
         </Thead>
         <Tbody>
           {items.ids.map(id => (
-            <Item key={id} id={id} address={address} />
+            <Item key={id} id={id} address={address} forSale={list.items.some(saleOffer => saleOffer.key === `${KITTY_ITEMS_ADDRESS}.${KITTY_ITEMS_NAME}.${id}`)} />
           ))}
         </Tbody>
       </Table>
